@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Halloween Quiz 👻</title>
+
+<style>
+
+/* =========================
+   พื้นฐาน
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #3b1600,
+            #120700 60%,
+            #000
+        );
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+}
+
+
+/* =========================
+   กล่องเกม
+========================= */
+
+.game {
+    width: 90%;
+    max-width: 650px;
+
+    background: rgba(20, 10, 5, 0.95);
+
+    padding: 35px;
+
+    border-radius: 22px;
+
+    border: 2px solid #ff6a00;
+
+    box-shadow:
+        0 0 20px #ff5e00,
+        0 0 60px rgba(255, 70, 0, 0.3);
+
+    text-align: center;
+}
+
+
+/* =========================
+   หัวข้อ
+========================= */
+
+h1 {
+    margin-top: 0;
+
+    color: #ff7518;
+
+    font-size: 36px;
+
+    text-shadow:
+        0 0 10px #ff4500,
+        0 0 25px #ff4500;
+}
+
+
+/* =========================
+   คะแนน
+========================= */
+
+#score {
+    color: #ccc;
+
+    margin-bottom: 20px;
+
+    font-size: 16px;
+}
+
+
+/* =========================
+   คำถาม
+========================= */
+
+#question {
+    font-size: 24px;
+
+    margin: 25px 0;
+
+    line-height: 1.5;
+}
+
+
+/* =========================
+   ปุ่มคำตอบ
+========================= */
+
+.answers {
+    display: grid;
+
+    gap: 12px;
+}
+
+.answer {
+    width: 100%;
+
+    padding: 15px;
+
+    border: 1px solid #693000;
+
+    border-radius: 12px;
+
+    background: #241209;
+
+    color: white;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.answer:hover {
+    background: #4a1f0a;
+
+    border-color: #ff7518;
+
+    transform: scale(1.02);
+}
+
+
+/* =========================
+   ผลลัพธ์
+========================= */
+
+#result {
+    margin-top: 20px;
+
+    min-height: 25px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   หน้าเริ่มเกม
+========================= */
+
+#startScreen {
+    text-align: center;
+}
+
+#startScreen p {
+    color: #ccc;
+
+    font-size: 17px;
+
+    line-height: 1.6;
+
+    margin-bottom: 25px;
+}
+
+
+/* =========================
+   ปุ่มเริ่ม / เล่นใหม่
+========================= */
+
+#start,
+#restart {
+    padding: 14px 30px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #ff5e00;
+
+    color: white;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+#start:hover,
+#restart:hover {
+    background: #ff7b22;
+
+    transform: scale(1.05);
+}
+
+
+/* =========================
+   JUMPSCARE
+========================= */
+
+#jumpscare {
+    position: fixed;
+
+    inset: 0;
+
+    background: #000;
+
+    display: none;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 9999;
+
+    overflow: hidden;
+}
+
+
+/* รูปผี */
+
+#jumpscare img {
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: contain;
+
+    animation:
+        scare 0.12s infinite alternate;
+
+    filter:
+        drop-shadow(0 0 30px red);
+}
+
+
+/* แสงแดง */
+
+#jumpscare::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(255, 0, 0, 0.15);
+
+    animation:
+        flash 0.12s infinite alternate;
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+
+/* =========================
+   Animation ผี
+========================= */
+
+@keyframes scare {
+
+    from {
+        transform:
+            scale(1)
+            rotate(-4deg);
+    }
+
+    to {
+        transform:
+            scale(1.25)
+            rotate(4deg);
+    }
+}
+
+
+/* =========================
+   Animation แสง
+========================= */
+
+@keyframes flash {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+/* =========================
+   หน้าจอสั่น
+========================= */
+
+.shake {
+    animation:
+        shake 0.45s;
+}
+
+@keyframes shake {
+
+    0% {
+        transform: translate(0);
+    }
+
+    20% {
+        transform:
+            translate(-18px, 10px);
+    }
+
+    40% {
+        transform:
+            translate(18px, -10px);
+    }
+
+    60% {
+        transform:
+            translate(-12px, -5px);
+    }
+
+    80% {
+        transform:
+            translate(12px, 5px);
+    }
+
+    100% {
+        transform: translate(0);
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     หน้าเริ่มเกม
+========================= -->
+
+<div
+    class="game"
+    id="startScreen"
+>
+
+    <h1>
+        🎃 Halloween Quiz 👻
+    </h1>
+
+    <p>
+        ทดสอบความรู้เกี่ยวกับวันฮาโลวีน<br>
+        แต่ระวัง...<br>
+        ตอบผิดอาจเจออะไรบางอย่าง 👻
+    </p>
+
+    <button id="start">
+        🎃 เริ่มเกม
+    </button>
+
+</div>
+
+
+<!-- =========================
+     เกม
+========================= -->
+
+<div
+    class="game"
+    id="game"
+    style="display:none;"
+>
+
+    <h1>
+        🎃 Halloween Quiz 👻
+    </h1>
+
+    <div id="score">
+        ข้อ 1 / 10 | คะแนน: 0
+    </div>
+
+    <div id="question">
+        กำลังโหลดคำถาม...
+    </div>
+
+    <div
+        class="answers"
+        id="answers"
+    ></div>
+
+    <div id="result"></div>
+
+</div>
+
+
+<!-- =========================
+     เสียงพื้นหลัง
+========================= -->
+
+<audio
+    id="bgMusic"
+    src="background.mp3"
+    loop
+    preload="auto"
+></audio>
+
+
+<!-- =========================
+     เสียง Jumpscare
+========================= -->
+
+<audio
+    id="jumpscareSound"
+    src="jumpscare.mp3"
+    preload="auto"
+></audio>
+
+
+<!-- =========================
+     รูปผี
+========================= -->
+
+<div id="jumpscare">
+
+    <img
+        src="ghost.png"
+        alt="ผี"
+    >
+
+</div>
+
+
+<script>
+
+
+/* =========================
+   คำถาม Halloween
+========================= */
+
+let questions = [
+
+    {
+        question:
+            "วันฮาโลวีนตรงกับวันที่เท่าไหร่?",
+
+        answers: [
+            "14 กุมภาพันธ์",
+            "31 ตุลาคม",
+            "25 ธันวาคม",
+            "1 มกราคม"
+        ],
+
+        correct: 1
+    },
+
+
+    {
+        question:
+            "สัญลักษณ์ใดมักเกี่ยวข้องกับวันฮาโลวีนมากที่สุด?",
+
+        answers: [
+            "🎃 ฟักทอง",
+            "🌹 กุหลาบ",
+            "❄️ หิมะ",
+            "🌻 ดอกทานตะวัน"
+        ],
+
+        correct: 0
+    },
+
+
+    {
+        question:
+            "ฟักทองที่แกะสลักเป็นหน้าผีเรียกว่าอะไร?",
+
+        answers: [
+            "Jack-o'-lantern",
+            "Pumpkin Ghost",
+            "Halloween Light",
+            "Spooky Pumpkin"
+        ],
+
+        correct: 0
+    },
+
+
+    {
+        question:
+            "คำว่า Halloween มีความเกี่ยวข้องกับคำใด?",
+
+        answers: [
+            "All Hallows' Eve",
+            "Christmas Eve",
+            "New Year's Eve",
+            "Valentine's Eve"
+        ],
+
+        correct: 0
+    },
+
+
+    {
+        question:
+            "เด็ก ๆ มักพูดว่าอะไรในวันฮาโลวีนเพื่อขอขนม?",
+
+        answers: [
+            "Give me food!",
+            "Trick or Treat!",
+            "Happy Birthday!",
+            "Good Morning!"
+        ],
+
+        correct: 1
+    },
+
+
+    {
+        question:
+            "สีใดเป็นสีที่นิยมใช้ในธีมฮาโลวีน?",
+
+        answers: [
+            "🧡 ส้มและ 🖤 ดำ",
+            "💗 ชมพูและ 💙 ฟ้า",
+            "💚 เขียวและ 🤍 ขาว",
+            "💛 ทองและ 🤍 เงิน"
+        ],
+
+        correct: 0
+    },
+
+
+    {
+        question:
+            "สัตว์ชนิดใดมักถูกนำมาเชื่อมโยงกับแม่มดในธีมฮาโลวีน?",
+
+        answers: [
+            "🐈‍⬛ แมวดำ",
+            "🐰 กระต่าย",
+            "🐟 ปลา",
+            "🐼 แพนด้า"
+        ],
+
+        correct: 0
+    },
+
+
+    {
+        question:
+            "ตัวละครใดมักปรากฏในธีมฮาโลวีน?",
+
+        answers: [
+            "🧙 แม่มด",
+            "👸 เจ้าหญิง",
+            "✈️ นักบิน",
+            "⚽ นักกีฬา"
+        ],
+
+        correct: 0
+    },
+
+
+    {
+        question:
+            "ขนมชนิดใดมักได้รับความนิยมในช่วง Trick or Treat?",
+
+        answers: [
+            "🍬 ลูกอม",
+            "🍜 ส้มตำ",
+            "🍚 ข้าวผัด",
+            "🍲 บะหมี่"
+        ],
+
+        correct: 0
+    },
+
+
+    {
+        question:
+            "วันฮาโลวีนมีบรรยากาศเกี่ยวข้องกับเรื่องใดมากที่สุด?",
+
+        answers: [
+            "👻 ความลึกลับและเรื่องเหนือธรรมชาติ",
+            "⚽ กีฬา",
+            "✈️ การเดินทาง",
+            "🍳 การแข่งขันทำอาหาร"
+        ],
+
+        correct: 0
+    }
+
+];
+
+
+/* =========================
+   ตัวแปรเกม
+========================= */
+
+let currentQuestion = 0;
+
+let score = 0;
+
+
+/* =========================
+   เชื่อมกับ HTML
+========================= */
+
+let startScreen =
+    document.getElementById(
+        "startScreen"
+    );
+
+let startButton =
+    document.getElementById(
+        "start"
+    );
+
+let game =
+    document.getElementById(
+        "game"
+    );
+
+let questionElement =
+    document.getElementById(
+        "question"
+    );
+
+let answersElement =
+    document.getElementById(
+        "answers"
+    );
+
+let scoreElement =
+    document.getElementById(
+        "score"
+    );
+
+let resultElement =
+    document.getElementById(
+        "result"
+    );
+
+let jumpscare =
+    document.getElementById(
+        "jumpscare"
+    );
+
+let bgMusic =
+    document.getElementById(
+        "bgMusic"
+    );
+
+let jumpscareSound =
+    document.getElementById(
+        "jumpscareSound"
+    );
+
+
+/* =========================
+   เริ่มเกม
+========================= */
+
+startButton.onclick = function() {
+
+    startScreen.style.display =
+        "none";
+
+    game.style.display =
+        "block";
+
+
+    /* เริ่มเพลงพื้นหลัง */
+
+    bgMusic.volume = 0.5;
+
+    bgMusic.currentTime = 0;
+
+    bgMusic.play()
+        .catch(function() {});
+
+
+    loadQuestion();
+
+};
+
+
+/* =========================
+   โหลดคำถาม
+========================= */
+
+function loadQuestion() {
+
+    if (
+        currentQuestion >=
+        questions.length
+    ) {
+
+        endGame();
+
+        return;
+    }
+
+
+    let q =
+        questions[
+            currentQuestion
+        ];
+
+
+    questionElement.textContent =
+        q.question;
+
+
+    scoreElement.textContent =
+        "ข้อ " +
+        (currentQuestion + 1) +
+        " / " +
+        questions.length +
+        " | คะแนน: " +
+        score;
+
+
+    answersElement.innerHTML =
+        "";
+
+    resultElement.textContent =
+        "";
+
+
+    q.answers.forEach(
+        function(answer, index) {
+
+            let button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.className =
+                "answer";
+
+
+            button.textContent =
+                answer;
+
+
+            button.onclick =
+                function() {
+
+                    checkAnswer(
+                        index
+                    );
+
+                };
+
+
+            answersElement.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   ตรวจคำตอบ
+========================= */
+
+function checkAnswer(selected) {
+
+    let correct =
+        questions[
+            currentQuestion
+        ].correct;
+
+
+    /* =====================
+       ตอบถูก
+    ===================== */
+
+    if (
+        selected === correct
+    ) {
+
+        score++;
+
+
+        resultElement.textContent =
+            "✅ ถูกต้อง!";
+
+
+        resultElement.style.color =
+            "#55ff88";
+
+
+        setTimeout(
+            function() {
+
+                currentQuestion++;
+
+                loadQuestion();
+
+            },
+            700
+        );
+
+    }
+
+
+    /* =====================
+       ตอบผิด
+    ===================== */
+
+    else {
+
+        resultElement.textContent =
+            "❌ ผิดแล้ว... เตรียมตัว!!!";
+
+
+        resultElement.style.color =
+            "#ff3333";
+
+
+        /* หน้าจอสั่น */
+
+        game.classList.add(
+            "shake"
+        );
+
+
+        setTimeout(
+            function() {
+
+                game.classList.remove(
+                    "shake"
+                );
+
+            },
+            450
+        );
+
+
+        /* =====================
+           ผีขึ้น + เสียงพร้อมกัน
+        ===================== */
+
+        setTimeout(
+            function() {
+
+                jumpscare.style.display =
+                    "flex";
+
+
+                jumpscareSound.currentTime =
+                    0;
+
+                jumpscareSound.volume =
+                    1;
+
+
+                jumpscareSound.play()
+                    .catch(
+                        function() {}
+                    );
+
+            },
+            100
+        );
+
+
+        /* =====================
+           ผีหาย
+        ===================== */
+
+        setTimeout(
+            function() {
+
+                jumpscare.style.display =
+                    "none";
+
+
+                /* หยุดเสียง */
+
+                jumpscareSound.pause();
+
+                jumpscareSound.currentTime =
+                    0;
+
+
+                currentQuestion++;
+
+                loadQuestion();
+
+            },
+            1800
+        );
+
+    }
+
+}
+
+
+/* =========================
+   จบเกม
+========================= */
+
+function endGame() {
+
+    questionElement.textContent =
+        "🎃 จบเกมแล้ว! 👻";
+
+
+    answersElement.innerHTML =
+        "";
+
+
+    scoreElement.textContent =
+        "คะแนนของคุณ: " +
+        score +
+        " / " +
+        questions.length;
+
+
+    let message = "";
+
+
+    if (
+        score === 10
+    ) {
+
+        message =
+            "🏆 สุดยอด! รู้เรื่องฮาโลวีนมากเกินไปแล้ว!";
+
+    }
+
+    else if (
+        score >= 7
+    ) {
+
+        message =
+            "😎 เก่งใช้ได้เลย!";
+
+    }
+
+    else if (
+        score >= 4
+    ) {
+
+        message =
+            "👻 รอดจากผีมาได้แบบเฉียดฉิว!";
+
+    }
+
+    else {
+
+        message =
+            "💀 ความรู้หายไปไหนหมดเนี่ย...";
+
+    }
+
+
+    resultElement.innerHTML =
+
+        message +
+        "<br><br>" +
+
+        '<button id="restart">' +
+        "🔄 เล่นอีกครั้ง" +
+        "</button>";
+
+
+    document
+        .getElementById("restart")
+        .onclick =
+        restartGame;
+
+}
+
+
+/* =========================
+   เล่นใหม่
+========================= */
+
+function restartGame() {
+
+    currentQuestion = 0;
+
+    score = 0;
+
+
+    bgMusic.currentTime = 0;
+
+    bgMusic.play()
+        .catch(
+            function() {}
+        );
+
+
+    loadQuestion();
+
+}
+
+</script>
+
+</body>
+
+</html>
